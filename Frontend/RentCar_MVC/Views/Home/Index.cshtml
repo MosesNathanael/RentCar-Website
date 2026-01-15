@@ -1,0 +1,137 @@
+﻿@using RentCar_MVC.DTOs
+@model List<CarDisplayDto>
+@{
+    var username = Context.Session.GetString("UserName");
+    var searchstatus = ViewBag.SearchStatus as bool? ?? false;
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <title>RentCar - Cari Mobil</title>
+    <link rel="stylesheet" href="~/css/Home.css" asp-append-version="true" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <div class="dropdown">
+                <button class="dropbtn">Home</button>
+                <div class="dropdown-content">
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a asp-controller="TransactionHistory" asp-action="ViewHistory">History</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="navbar-right">
+            @if (!string.IsNullOrEmpty(username))
+            {
+                <span class="nav-link greeting">Hai, @username</span>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="navbar-link-button">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login">Login</a>
+                <a asp-controller="Account" asp-action="Register">Registrasi</a>
+            }
+        </div>
+    </nav>
+
+    <section class="search-section">
+        <h2>Cari Mobil</h2>
+
+        <form class="search-form" method="get" asp-controller="DisplayCar" asp-action="Search">
+            <div class="form-group">
+                <label for="rentalDate">Pickup Date</label>
+                <input type="date" id="rentalDate" name="rentalDate"
+                    required
+                    min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <div class="form-group">
+                <label for="returnDate">Return Date</label>
+                <input type="date" id="returnDate" name="returnDate"
+                    required
+                    min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            </div>
+
+
+            <div class="form-group">
+                <label for="year">Tahun Pembuatan</label>
+                <select id="year" name="year">
+                    <option value="0">Semua Tahun</option>
+                    @for (int y = 2016; y <= 2025; y++)
+                    {
+                        <option value="@y">@y</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="sort">Sortir Berdasarkan</label>
+                <select id="sort" name="sort">
+                    <option value="asc">Harga Terendah - Tertinggi</option>
+                    <option value="desc">Harga Tertinggi - Terendah</option>
+                </select>
+            </div>
+
+            <div class="form-group full-width">
+                <button type="submit" class="search-button">Cari</button>
+            </div>
+        </form>
+    </section>
+
+    
+    @if (searchstatus)
+    {
+        <section class="car-list">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var car in Model)
+                {
+                    <div class="car-card">
+                        <img src="@car.Image" alt="@car.Name" class="car-image" />
+                        <div class="car-details">
+                            <h3>@car.Name</h3>
+                            <p>Harga: Rp @car.PricePerDay.ToString("N0") / hari</p>
+                            <a class="rent-button"
+                               asp-controller="DisplayCar"
+                               asp-action="RentalDetails"
+                               asp-route-id="@car.Id"
+                               asp-route-rentalDate="@(ViewBag.RentalDate != null ? ((DateTime)ViewBag.RentalDate).ToString("yyyy-MM-dd") : string.Empty)"
+                               asp-route-returnDate="@(ViewBag.ReturnDate != null ? ((DateTime)ViewBag.ReturnDate).ToString("yyyy-MM-dd") : string.Empty)">
+                                Sewa Sekarang
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="no-results">Tidak ada mobil yang tersedia untuk filter tersebut.</p>
+            }
+        </section>
+    }
+
+</body>
+
+<script>
+    const pickupInput = document.getElementById("rentalDate");
+    const returnInput = document.getElementById("returnDate");
+
+    
+    pickupInput.addEventListener("change", function () {
+        returnInput.min = this.value;
+        if (returnInput.value < this.value) {
+            returnInput.value = this.value; 
+        }
+    });
+</script>
+</html>
+
+

@@ -1,0 +1,83 @@
+@model List<RentCar_MVC.Models.TransactionHistoryModel>
+@{
+    var username = Context.Session.GetString("UserName");
+    Layout = null;
+}
+
+<link rel="stylesheet" href="~/css/TransactionHisto.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+<nav class="navbar">
+    <div class="navbar-left">
+            <div class="dropdown">
+                <button class="dropbtn">Home</button>
+                <div class="dropdown-content">
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a asp-controller="TransactionHistory" asp-action="ViewHistory">History</a>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-right">
+            @if (!string.IsNullOrEmpty(username))
+            {
+                <span class="nav-link greeting">Hai, @username</span>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="navbar-link-button">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login">Login</a>
+                <a asp-controller="Account" asp-action="Register">Registrasi</a>
+            }
+    </div>
+</nav>
+
+<section class="history-section">
+    <h2>@ViewData["Title"]</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-history">
+            <h4>Belum ada riwayat penyewaan mobil</h4>
+            <p>Silakan lakukan penyewaan untuk melihat riwayat transaksi Anda di sini.</p>
+
+            <a class="rent-button" asp-controller="Home" asp-action="Index">
+                Cari Mobil untuk Disewa
+            </a>
+        </div>
+    }
+    else
+    {
+        <h2>Riwayat Penyewaan Mobil</h2>
+        <div class="table-container">
+            <table class="rental-table">
+                <thead>
+                    <tr>
+                        <th>Tanggal Sewa</th>
+                        <th>Mobil</th>
+                        <th>Harga Sewa per Hari</th>
+                        <th>Total Hari</th>
+                        <th>Total Harga</th>
+                        <th>Status Pembayaran</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.RentalDate.ToString("dd MMMM yyyy") - @item.ReturnDate.ToString("dd MMMM yyyy")</td>
+                            <td>@item.CarName</td>
+                            <td>Rp. @item.Price</td>
+                            <td>@item.Total_Days</td>
+                            <td>Rp. @item.Total_Price.ToString("N0")</td>
+                            <td>@(item.status ? "Sudah Dibayar" : "Belum Dibayar")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+    </div>
+    }
+</section>
+
+

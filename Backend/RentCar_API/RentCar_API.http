@@ -1,0 +1,12 @@
+@RentCar_API_HostAddress = http://localhost:5271
+
+GET http://localhost:5271/api/HomePage/DisplayCar/Asc
+Accept: application/json
+
+###
+GET http://localhost:5271/api/HomePage/DisplayCar/Desc
+###
+GET http://localhost:5271/api/HomePage/DisplayCar/PriceDesc
+###
+GET http://localhost:5271/api/HomePage/DisplayCar/PriceAsc
+

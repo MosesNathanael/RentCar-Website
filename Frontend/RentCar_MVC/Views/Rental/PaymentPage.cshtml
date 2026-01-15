@@ -1,0 +1,69 @@
+@model RentCar_MVC.Models.RentalViewModel
+
+@{
+    ViewBag.Title = "Payment Page";
+    var username = Context.Session.GetString("UserName"); 
+    Layout = null;
+}
+
+<link rel="stylesheet" href="~/css/payment.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+<nav class="navbar">
+    <div class="navbar-left">
+            <div class="dropdown">
+                <button class="dropbtn">Home</button>
+                <div class="dropdown-content">
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a asp-controller="TransactionHistory" asp-action="ViewHistory">History</a>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-right">
+            @if (!string.IsNullOrEmpty(username))
+            {
+                <span class="nav-link greeting">Hai, @username</span>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="navbar-link-button">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login">Login</a>
+                <a asp-controller="Account" asp-action="Register">Registrasi</a>
+            }
+    </div>
+</nav>
+
+<div class="payment-container">
+    <h2 class="page-title">Konfirmasi Pembayaran</h2>
+
+    <div class="rental-details">
+        <h3>Detail Sewa</h3>
+        <ul>
+            <li><strong>Mobil:</strong> @Model.Car_id</li>
+            <li><strong>Tanggal Sewa:</strong> @Model.Rental_date.ToString("dd MMM yyyy")</li>
+            <li><strong>Tanggal Kembali:</strong> @Model.Return_date.ToString("dd MMM yyyy")</li>
+            <li><strong>Total Harga:</strong> Rp @Model.Total_price.ToString("N0")</li>
+        </ul>
+    </div>
+
+    <form asp-controller="Payment" asp-action="ProcessPayment" method="post" class="payment-form">
+        <h3>Pilih Metode Pembayaran</h3>
+        <select name="paymentMethod" class="payment-select">
+            <option value="CreditCard">Kartu Kredit</option>
+            <option value="BankTransfer">Transfer Bank</option>
+            <option value="EWallet">E-Wallet</option>
+        </select>
+
+        <input type="hidden" asp-for="Rental_id" />
+        <input type="hidden" asp-for="Car_id" />
+        <input type="hidden" asp-for="Rental_date" />
+        <input type="hidden" asp-for="Return_date" />
+        <input type="hidden" asp-for="Total_price" />
+
+        <div class="button-container">
+            <button type="submit" class="confirm-button">Bayar Sekarang</button>
+        </div>
+    </form>
+</div>

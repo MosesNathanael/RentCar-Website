@@ -1,0 +1,65 @@
+@model RentCar_MVC.Models.RegisterViewModel
+@{
+    Layout = null;
+}
+
+<link rel="stylesheet" href="~/css/register.css" />
+
+<div class="register-wrapper">
+    <div class="register-box">
+        <h2>RentCar - Registrasi</h2>
+
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+        {
+            @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Name, "Nama Lengkap")
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Masukkan nama lengkap Anda" })
+                @Html.ValidationMessageFor(m => m.Name)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email)
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Masukkan email Anda" })
+                @Html.ValidationMessageFor(m => m.Email)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Masukkan password Anda" })
+                @Html.ValidationMessageFor(m => m.Password)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, "Re-Password")
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Masukkan kembali password Anda" })
+                @Html.ValidationMessageFor(m => m.Password)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Phone_number, "Nomor Telepon")
+                @Html.TextBoxFor(m => m.Phone_number, new { @class = "form-control", placeholder = "Masukkan nomor telepon Anda" })
+                @Html.ValidationMessageFor(m => m.Phone_number)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Address, "Alamat")
+                @Html.TextAreaFor(m => m.Address, new { @class = "form-control", placeholder = "Masukkan alamat Anda", rows = 3 })
+                @Html.ValidationMessageFor(m => m.Address)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Driver_license_number, "Driver License Number")
+                @Html.TextAreaFor(m => m.Driver_license_number, new { @class = "form-control", placeholder = "Masukkan nomor lisensi Anda", rows = 3 })
+                @Html.ValidationMessageFor(m => m.Driver_license_number)
+            </div>
+
+            <button type="submit" class="register-button">Registrasi</button>
+
+            <p class="login-link">
+                Sudah punya akun? <a href="@Url.Action("Login", "Account")">Login disini</a>
+            </p>
+        }
+    </div>
+</div>

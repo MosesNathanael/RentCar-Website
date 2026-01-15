@@ -1,0 +1,42 @@
+@model RentCar_MVC.Models.LoginViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login ke RentCar</title>
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-box">
+            <h2>Login ke RentCar</h2>
+            <div asp-validation-summary="ModelOnly" class="error-message"></div>
+
+            <form asp-controller="Account" asp-action="Login" method="post" class="login-form">
+                <div class="form-group">
+                    <label for="Email">Email</label>
+                    <input asp-for="Email" placeholder="Masukkan username Anda" />
+                    <span asp-validation-for="Email" class="error-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="Password">Password</label>
+                    <input asp-for="Password" type="password" placeholder="Masukkan password Anda" />
+                    <span asp-validation-for="Password" class="error-message"></span>
+                </div>
+
+                <button type="submit" class="login-button">Login</button>
+            </form>
+
+            <div class="register-link">
+                Belum punya akun? <a href="/Account/Register">Registrasi disini</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

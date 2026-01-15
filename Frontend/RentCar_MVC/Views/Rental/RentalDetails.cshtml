@@ -1,0 +1,107 @@
+@model CarDetailsDto
+
+@{
+    ViewBag.Title = "Sewa Mobil";
+    var username = Context.Session.GetString("UserName");
+    Layout = null;
+}
+
+
+
+<link rel="stylesheet" href="~/css/RentalDetails.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+
+
+<nav class="navbar">
+        <div class="navbar-left">
+            <div class="dropdown">
+                <button class="dropbtn">Home</button>
+                <div class="dropdown-content">
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a asp-controller="TransactionHistory" asp-action="ViewHistory">History</a>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-right">
+            @if (!string.IsNullOrEmpty(username))
+            {
+                <span class="nav-link greeting">Hai, @username</span>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="navbar-link-button">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login">Login</a>
+                <a asp-controller="Account" asp-action="Register">Registrasi</a>
+            }
+        </div>
+</nav>
+
+
+<div class="rental-container">
+    <h2 class="title">Sewa Mobil</h2>
+
+    <div class="image-section">
+        <img src="@Model.CarImages.FirstOrDefault()" alt="@Model.CarName" class="car-image" />
+
+        <div class="image-nav">
+            <button type="button" class="nav-button prev">&lt; Prev</button>
+            <button type="button" class="nav-button next">Next &gt;</button>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <h3>Informasi Mobil</h3>
+
+        <form asp-controller="DisplayCar" asp-action="ComfirmRental" method="post">
+            <ul>
+                <li><strong>Tipe Mobil:</strong> @Model.CarName.Split(' ')[0]</li>
+                <li><strong>Nama Mobil:</strong> @Model.CarName</li>
+                <li><strong>Transmisi:</strong> @Model.Transmission</li>
+                <li><strong>Jumlah Penumpang:</strong> 7 Penumpang</li>
+                <li><strong>Nama Penyewa:</strong> Putra (putra44@gmail.com)</li>
+                <li><strong>Tanggal Sewa:</strong> @Model.RentalDate.ToString("dd MMMM yyyy") sampai @Model.ReturnDate.ToString("dd MMMM yyyy")</li>
+                <li><strong>Harga Sewa:</strong> Rp. @Model.Price.ToString("N0") / hari</li>
+                <li><strong>Total Harga Sewa:</strong> Rp. @Model.Total_Price.ToString("N0")</li>
+            </ul>
+
+            <input type="hidden" asp-for="CarId" />
+            <input type="hidden" asp-for="CarName" />
+            <input type="hidden" asp-for="Transmission" />
+            <input type="hidden" asp-for="RentalDate" />
+            <input type="hidden" asp-for="ReturnDate" />
+            <input type="hidden" asp-for="Price" />
+            <input type="hidden" asp-for="Total_Price" />
+            @for (int i = 0; i < Model.CarImages.Count; i++)
+            {
+                <input type="hidden" name="CarImages[@i]" value="@Model.CarImages[i]" />
+            }
+
+            <div class="rent-button-container">
+                <button type="submit" class="rent-button">Sewa</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    var carImages = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CarImages));
+    var currentIndex = 0;
+
+    function showImage(index) {
+        const imgElement = document.querySelector(".car-image");
+        imgElement.src = carImages[index];
+    }
+
+    document.querySelector(".nav-button.prev").addEventListener("click", function () {
+        currentIndex = (currentIndex - 1 + carImages.length) % carImages.length;
+        showImage(currentIndex);
+    });
+
+    document.querySelector(".nav-button.next").addEventListener("click", function () {
+        currentIndex = (currentIndex + 1) % carImages.length;
+        showImage(currentIndex);
+    });
+</script>
